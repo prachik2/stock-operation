@@ -1,18 +1,32 @@
 from django import forms
-from django import views
-from .models import *
+from django.forms.widgets import Select, TextInput
+
+from .models import Stock, StockOperation, Location, Product
 
 
-
-class StockInputForm(forms.Form):
-    quantity = forms.CharField(label="Quantity", widget=forms.TextInput(attrs={'placeholder': 'Product Quantity'}))
+class StockForm(forms.Form):
+    quantity = forms.IntegerField(min_value=1)
     location = forms.ModelChoiceField(queryset=Location.objects.all())
     product = forms.ModelChoiceField(queryset=Product.objects.all())
-    operation_type = forms.CharField(label="Operation Type", widget=forms.Select(choices=OPERATION_TYPE))
+    operation_type = forms.ChoiceField(
+        choices=(
+            ('stock_input', 'Stock Input'), ('stock_output', 'Stock Output')
+        )
+    )
 
 
-
-# class StockOutputForm(forms.Form):
-#     quantity = forms.CharField(label="Quantity", widget=forms.TextInput(attrs={'placeholder': 'Product Quantity'}))
-#     from_location = forms.CharField(label="From Location",widget=forms.TextInput(attrs={'placeholder': 'From Location'}))
-#     to_location = forms.CharField(label="To Location", widget=forms.TextInput(attrs={'placeholder': 'To Location'}))
+class StockOperationForm(forms.ModelForm):
+    class Meta:
+        model = StockOperation
+        fields = ['quantity', 'location', 'product', 'operation_type']
+        # widget = {
+        #     'quantity': TextInput(
+        #         attrs={'class': 'required form-control col-md-7 col-xs-12', 'placeholder': 'Quantity'}),
+        #     'operation_type': Select(
+        #         attrs={'class': 'required form-control col-md-7 col-xs-12', 'placeholder': 'Operation Type'}),
+        #     'location': Select(
+        #         attrs={'class': 'required form-control col-md-7 col-xs-12', 'placeholder': 'Location'}),
+        #     'product': Select(
+        #         attrs={'class': 'required form-control col-md-7 col-xs-12', 'placeholder': 'Product'}),
+        #
+        # }

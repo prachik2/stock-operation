@@ -27,10 +27,19 @@ class Location(models.Model):
 
 
 class StockOperation(models.Model):
-    location = models.ForeignKey('Location', on_delete=models.PROTECT, related_name='location', default='')
-    product = models.ForeignKey('Product', on_delete=models.PROTECT, related_name='product', default='')
+    location = models.ForeignKey('Location', on_delete=models.PROTECT)
+    product = models.ForeignKey('Product', on_delete=models.PROTECT)
     quantity = models.IntegerField()
     operation_type = models.CharField(max_length=20, choices=OPERATION_TYPE)
 
     def __str__(self):
-        return self.operation_type
+        return "{}-{}-{} :{}".format(self.product, self.location, self.operation_type, self.quantity)
+
+
+class Stock(models.Model):
+    location = models.ForeignKey('Location', on_delete=models.PROTECT)
+    product = models.ForeignKey('Product', on_delete=models.PROTECT)
+    quantity = models.IntegerField(default=0)
+
+    def __str__(self):
+        return "{}-{}: {}".format(self.product, self.location, self.quantity)

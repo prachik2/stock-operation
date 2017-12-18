@@ -6,7 +6,7 @@
 </head>
 <body>
     <form action="#" method="POST" id="stock_input" name ='stockinput'>{% csrf_token %}
-			{{ stock_input_form.as_p }}
+			{{ form.as_p }}
 		<button  type="submit" class="btn btn-primary" form="stock_input" >Submit</button>
     </form>
 
