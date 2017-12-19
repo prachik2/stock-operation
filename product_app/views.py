@@ -2,16 +2,17 @@
 from __future__ import unicode_literals
 
 # Create your views here.
+from silk.profiling.profiler import silk_profile
 from django.shortcuts import render, render_to_response
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse
-from product_app.models import Stock
+from product_app.models import Stock, StockOperation
 from .forms import StockForm, StockOperationForm
-
 
 
 def index(request):
     print request
+
     return HttpResponse("Hello, world. You're at the index.")
 
 
@@ -60,6 +61,7 @@ def detail(request, stock_id):
 #     return render(request, template, {'stock_input_form': stock_input_form})
 
 
+
 def dashboard(request, template="dashboard.html"):
     if request.GET:
         print "Dashboard View"
@@ -67,6 +69,7 @@ def dashboard(request, template="dashboard.html"):
         # stock_operations = StockOperation.objects.all()
 
     return render(request, template)
+
 
 
 def stock(request, template="input_stock.html"):
@@ -79,7 +82,7 @@ def stock(request, template="input_stock.html"):
             operation_type = form.cleaned_data['operation_type']
 
             stock_instance, created = Stock.objects.get_or_create(location=location, product=product, defaults={'quantity': 0})
-            print(dir(stock_instance))
+            # print(dir(stock_instance))
 
             if operation_type == 'stock_input':
                 stock_instance.quantity += quantity
@@ -95,20 +98,50 @@ def stock(request, template="input_stock.html"):
         return render(request, template, {'form': form})
 
 
+@silk_profile(name='stock_operation')
 def stock_operation(request, template="stock_operation.html"):
     if request.method == 'POST':
         form = StockOperationForm(request.POST)
         if form.is_valid():
             operation_instance = form.save(commit=False)
+            print operation_instance.quantity
             if operation_instance.operation_type == 'stock_input':
+                # print sum(operation_instance.quantity)
                 operation_instance.quantity += operation_instance.quantity
             else:
-                operation_instance.quantity -= operation_instance.quantity
+                operation_instance.quantity = operation_instance.quantity
             operation_instance.save()
-            print operation_instance
-            print(dir(operation_instance))
+            print (dir(operation_instance))
             return HttpResponseRedirect(reverse('dashboard'))
     else:
         form = StockOperationForm()
     return render(request, template, {'form': form})
+
+
+def updated_stocks(request, template="updated_stocks.html"):
+    if request.method == 'GET':
+        list_location_1 = []
+        list_location_2 = []
+        list_location_3 = []
+        list_location_4 = []
+        product_list = []
+
+        all_stocks = StockOperation.objects.all()
+        for product in all_stocks:
+            if str(product.product) == 'Product 1'and str(product.location) == 'Location 1':
+                list_location_1.append(product.quantity)
+            if str(product.product) == 'Product 2'and str(product.location) == 'Location 1':
+                list_location_2.append(product.quantity)
+            if str(product.product) == 'Product 1'and str(product.location) == 'Location 2':
+                list_location_3.append(product.quantity)
+            if str(product.product) == 'Product 2'and str(product.location) == 'Location 2':
+                list_location_4.append(product.quantity)
+        print sum(list_location_2)
+        print sum(list_location_1)
+        print sum(list_location_3)
+        print sum(list_location_4)
+
+
+
+    return render(request, template ,{'list_location_1':sum(list_location_1),'list_location_2':sum(list_location_2),'list_location_3':sum(list_location_3),'list_location_4':sum(list_location_4) })
 
