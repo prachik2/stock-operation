@@ -118,30 +118,58 @@ def stock_operation(request, template="stock_operation.html"):
     return render(request, template, {'form': form})
 
 
+@silk_profile(name='updated_stocks')
 def updated_stocks(request, template="updated_stocks.html"):
     if request.method == 'GET':
         list_location_1 = []
         list_location_2 = []
         list_location_3 = []
         list_location_4 = []
-        product_list = []
-
+        product_list_1 = []
+        product_list_2 = []
+        sorted_products = []
         all_stocks = StockOperation.objects.all()
         for product in all_stocks:
-            if str(product.product) == 'Product 1'and str(product.location) == 'Location 1':
-                list_location_1.append(product.quantity)
-            if str(product.product) == 'Product 2'and str(product.location) == 'Location 1':
-                list_location_2.append(product.quantity)
-            if str(product.product) == 'Product 1'and str(product.location) == 'Location 2':
-                list_location_3.append(product.quantity)
-            if str(product.product) == 'Product 2'and str(product.location) == 'Location 2':
-                list_location_4.append(product.quantity)
-        print sum(list_location_2)
-        print sum(list_location_1)
-        print sum(list_location_3)
-        print sum(list_location_4)
+            # print product.product
+            product_list_1.append(product.product)
+            list_location_1.append(product.location)
+            if product.product and product.location:
+                print product.quantity
 
+        sorted_products = sorted(set(product_list_1))
+        sorted_locations = sorted(set(list_location_1))
+        # for product in all_stocks:
+        #     if str(product.product)== 'Product 1':
+        #         if str(product.location)=='Location 1':
+        #             product_list_1.append(product.quantity)
+        #
+        #         if str(product.location)=='Location 2':
+        #             product_list_2.append(product.quantity)
+        #
+        #     if str(product.product)== 'Product 2':
+        #         if str(product.location)=='Location 1':
+        #             product_list_1.append(product.quantity)
+        #
+        #         if str(product.location)=='Location 2':
+        #             product_list_2.append(product.quantity)
+        #
+        #     print product_list_1
+        #     print product_list_2
+        # for product in all_stocks:
+        #     if str(product.product) == 'Product 1'and str(product.location) == 'Location 1':
+        #         list_location_1.append(product.quantity)
+        #     if str(product.product) == 'Product 2'and str(product.location) == 'Location 1':
+        #         list_location_2.append(product.quantity)
+        #     if str(product.product) == 'Product 1'and str(product.location) == 'Location 2':
+        #         list_location_3.append(product.quantity)
+        #     if str(product.product) == 'Product 2'and str(product.location) == 'Location 2':
+        #         list_location_4.append(product.quantity)
+        # print sum(list_location_2)
+        # print sum(list_location_1)
+        # print sum(list_location_3)
+        # print sum(list_location_4)
+        return render(request, template, {'sorted_products':sorted_products, 'sorted_locations':sorted_locations})
+        # return render(request, template, {'product_list_1': sum(product_list_1), 'product_list_2': sum(product_list_2)})
 
-
-    return render(request, template ,{'list_location_1':sum(list_location_1),'list_location_2':sum(list_location_2),'list_location_3':sum(list_location_3),'list_location_4':sum(list_location_4) })
+    # return render(request, template ,{'list_location_1':sum(list_location_1),'list_location_2':sum(list_location_2),'list_location_3':sum(list_location_3),'list_location_4':sum(list_location_4) })
 

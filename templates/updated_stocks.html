@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Updated Stocks</title>
+</head>
+<body>
+    <table border="1">
+
+        <tr>
+            <th>Product</th>
+            {% for location in sorted_locations  %}
+            <th>{{location}}</th>
+            {% endfor %}
+        </tr>
+
+        {% for product in sorted_products  %}
+        <tr>
+            <td>{{product}}</td>
+            <td>sum</td>
+            <td>sum</td>
+        </tr>
+        {% endfor  %}
+
+        <!--<tr>-->
+            <!--<td>Product 2</td>-->
+            <!--<td>{{product_list_1}}</td>-->
+            <!--<td>{{product_list_2}}</td>-->
+        <!--</tr>-->
+
+
+    </table>
+</body>
+</html>

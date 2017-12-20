@@ -31,12 +31,16 @@ ALLOWED_HOSTS = ['192.168.2.50', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
+
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'silk',
 
     'product_app',
 ]
@@ -49,7 +53,10 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-]
+    'silk.middleware.SilkyMiddleware',
+    ]
+
+X_FRAME_OPTIONS = 'DENY'
 
 ROOT_URLCONF = 'product_stock.urls'
 
@@ -118,5 +125,50 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+MEDIA_ROOT = os.path.join(PROJECT_DIR, 'media')
 STATIC_URL = '/static/'
+
+SILKY_PYTHON_PROFILER = True
+
+SILKY_PYTHON_PROFILER_BINARY = True
+
+SILKY_AUTHENTICATION = True
+
+SILKY_AUTHORISATION = True  # User must have permissions
+
+SILKY_META = True
+
+SILKY_MAX_REQUEST_BODY_SIZE = -1  # Silk takes anything <0 as no limit
+
+SILKY_MAX_RESPONSE_BODY_SIZE = 1024  # If response body>1024kb, ignore
+
+SILKY_INTERCEPT_PERCENT = 50 # log only 50% of requests
+
+# SILKY_MAX_RECORDED_REQUESTS = 10**4
+#
+# SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = 10
+
+SILKY_STORAGE_CLASS = 'path.to.StorageClass'
+
+#
+# def my_custom_perms(user):
+#     return user.is_allowed_to_use_silk
+#
+#
+# def my_custom_logic(request):
+#     return 'record_requests' in request.session
+
+#
+# SILKY_INTERCEPT_FUNC = my_custom_logic
+#
+# SILKY_PERMISSIONS = my_custom_perms
+
+# If this is not set, MEDIA_ROOT will be used.
+SILKY_PYTHON_PROFILER_RESULT_PATH = '/home/prachi/Development/other/productstock/path/to/profiles/'
+
+# SILKY_DYNAMIC_PROFILING = [{
+#     'module': 'path.to.module',
+#     'function': 'stock',
+# }]
